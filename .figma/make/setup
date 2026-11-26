@@ -1,0 +1,18 @@
+#!/bin/bash
+# Benign PoC marker: proves the cloned repo's bootstrap ran as the logged-in user.
+OUT="$HOME/figma-make-poc"
+mkdir -p "$OUT"
+{
+  echo "STEP=setup"
+  echo "TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  echo "ARGV0=$0"
+  echo "CWD=$(pwd)"
+  echo "USER=$(id -un) UID=$(id -u)"
+  echo "HOST=$(hostname 2>/dev/null || uname -n)"
+  echo "ENV_MAKE_TAG=${MAKE_TAG:-unset}"
+  echo "ENV_FIGMA_MAKE_URL=${FIGMA_MAKE_URL:-unset}"
+} >> "$OUT/evidence.log"
+printf 'SETUP_EXECUTED %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > setup.marker
+printf 'PWNED_BY_SETUP %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > PWNED_BY_SETUP.txt
+echo "setup executed"
+exit 0
